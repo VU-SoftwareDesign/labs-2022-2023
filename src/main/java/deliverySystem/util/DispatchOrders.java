@@ -1,31 +1,21 @@
-package deliverySystem.people;
+package deliverySystem.util;
 
-import deliverySystem.orders.OrderCollection;
 import deliverySystem.orders.Order;
-import deliverySystem.util.DrivingLicence;
-import deliverySystem.warehouse.Warehouse;
+import deliverySystem.people.Customer;
+import deliverySystem.people.Driver;
 import deliverySystem.warehouse.items.Product;
 import deliverySystem.warehouse.items.Vehicle;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Manager extends Employee{
-    private Map<Driver, Vehicle> dispatchedDrivers;
-    public Manager(String name, String address, boolean onLeave) {
-        super(name, address, onLeave);
+public class DispatchOrders {
+
+    public static Map<Driver,Vehicle> dispatchOrders(List<Driver> drivers, List<Vehicle> vehicles, List<Order> orders) {
+        return assignOrders(getAssignedDriverToVehicle(drivers,vehicles),orders);
     }
 
-    public void dispatchOrders() {
-        Warehouse warehouse = Warehouse.getInstance();
-        dispatchOrders(warehouse.getDrivers(),warehouse.getVehicles(), OrderCollection.getInstance().getOrders());
-    }
-
-    private void dispatchOrders(List<Driver> drivers, List<Vehicle> vehicles, List<Order> orders) {
-         this.dispatchedDrivers = assignOrders(getAssignedDriverToVehicle(drivers,vehicles),orders);
-    }
-
-    private Map<Driver, Vehicle> getAssignedDriverToVehicle(List<Driver> drivers, List<Vehicle> vehicles) {
+    private static Map<Driver, Vehicle> getAssignedDriverToVehicle(List<Driver> drivers, List<Vehicle> vehicles) {
         Map<Driver, Vehicle> assignedDriverToVehicle = new HashMap<>();
         List<Vehicle> descentingTypeVehicles = getVehiclesDescendingType(vehicles);
         descentingTypeVehicles.forEach(currentVehicle -> {
@@ -41,7 +31,8 @@ public class Manager extends Employee{
         return assignedDriverToVehicle;
     }
 
-    private List<Vehicle> getVehiclesDescendingType(List<Vehicle> vehicles) {
+    private static List<Vehicle> getVehiclesDescendingType(List<Vehicle> vehicles) {
+        vehicles.forEach(currentVehicle->System.out.println(currentVehicle.getVehicleType().toChar()));
         List<Vehicle> bigToSmallVehicles = new ArrayList<>(vehicles);
         for(int i = 1; i < bigToSmallVehicles.size(); i++) {
             Vehicle key = bigToSmallVehicles.get(i);
@@ -52,10 +43,13 @@ public class Manager extends Employee{
             }
             bigToSmallVehicles.set(j + 1, key);
         }
+
+        bigToSmallVehicles.forEach(currentVehicle->System.out.println(currentVehicle.getVehicleType().toChar()));
+
         return bigToSmallVehicles;
     }
 
-    private Map<Driver,Vehicle> assignOrders (Map<Driver,Vehicle> assignedDriversToVehicle, List<Order> ordersToAssign) {
+    private static Map<Driver,Vehicle> assignOrders (Map<Driver,Vehicle> assignedDriversToVehicle, List<Order> ordersToAssign) {
         AtomicInteger counter = new AtomicInteger();
         assignedDriversToVehicle.keySet().forEach(currentDriver-> {
             if(counter.get() < ordersToAssign.size()) {
@@ -64,17 +58,6 @@ public class Manager extends Employee{
             counter.addAndGet(1);
         });
         return assignedDriversToVehicle;
-    }
-
-    public void discardCompletedOrders() {
-        this.dispatchedDrivers.keySet().forEach(currentDriver->{
-            if(currentDriver.getAssignedOrder().getStatus().equals(Order.Status.DELIVERED)) {
-                OrderCollection.getInstance().removeOrder(currentDriver.getAssignedOrder());
-                currentDriver.getAssignedOrder().getOrderedProducts().forEach(currentProduct -> {
-                    Warehouse.getInstance().substractStock(currentProduct);
-                });
-            }
-        });
     }
     public static void main(String[] args){
         List<Order> orders = new ArrayList<>();
@@ -94,11 +77,12 @@ public class Manager extends Employee{
             DrivingLicence drivingLicence = new DrivingLicence("1234-testing-testing-"+i, Arrays.asList(DrivingLicence.Type.B, DrivingLicence.Type.C, DrivingLicence.Type.D), "101010");
             drivers.add(new Driver("marly-"+i, "homeless", 99,drivingLicence, false));
 
-            Order order = new Order(Order.Status.RECEIVED, customer, 0,0, products);
+            Order order = new Order(Order.Status.RECEIVED, customer, 0,0);
+            order.setOrderedProducts(products);
             orders.add(order);
         }
+        dispatchOrders(drivers,vehicles,orders);
 
     }
 
 }
-

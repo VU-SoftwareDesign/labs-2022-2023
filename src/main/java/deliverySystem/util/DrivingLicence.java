@@ -15,8 +15,8 @@ public class DrivingLicence {
 
         private final String name;
         Type(String name) {this.name = name;}
-
-        public String toString(){return this.name;}
+        public String getName(){return this.name;}
+        public char toChar() {return this.toString().toCharArray()[0];}
     }
     @Getter @Setter
     private String ID;

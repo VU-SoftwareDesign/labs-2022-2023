@@ -5,6 +5,7 @@ import deliverySystem.util.DrivingLicence;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,16 +13,18 @@ public class Driver extends Employee {
     @Getter @Setter
     private DrivingLicence drivingLicence;
     @Getter @Setter
-    private Map<Customer, List<Order>> customerOrderMap;
+    private Order assignedOrder;
+    @Getter @Setter
+    private boolean inTransit;
 
     public Driver(String name, String address, int employeeID, DrivingLicence drivingLicence, boolean onLeave) {
         super(name, address, employeeID, onLeave);
         this.drivingLicence = drivingLicence;
     }
-    public Driver(String name, String address, int employeeID, DrivingLicence drivingLicence, Map<Customer,List<Order>> customerOrderMap, boolean onLeave) {
-        super(name, address, employeeID, onLeave);
-        this.drivingLicence = drivingLicence;
-        this.customerOrderMap = customerOrderMap;
+
+    public void assignOrder(Order order) {
+        this.assignedOrder = order;
     }
 
+    public void completeOrder() {this.assignedOrder.setStatus(Order.Status.DELIVERED);}
 }
