@@ -6,18 +6,19 @@ import deliverySystem.util.DrivingLicence;
 import deliverySystem.warehouse.Warehouse;
 import deliverySystem.warehouse.items.Product;
 import deliverySystem.warehouse.items.Vehicle;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Manager extends Employee{
+    @Getter
     private Map<Driver, Vehicle> dispatchedDrivers;
     public Manager(String name, String address, boolean onLeave) {
         super(name, address, onLeave);
     }
 
-    public void dispatchOrders() {
-        Warehouse warehouse = Warehouse.getInstance();
+    public void dispatchOrders(Warehouse warehouse) {
         dispatchOrders(warehouse.getDrivers(),warehouse.getVehicles(), OrderCollection.getInstance().getOrders());
     }
 

@@ -19,11 +19,7 @@ public class Warehouse {
     @Setter @Getter
     private Manager manager;
     private static Warehouse instance;
-    private Warehouse(){}
-    public static Warehouse getInstance() {
-        if(instance==null) instance = new Warehouse();
-        return instance;
-    }
+    public Warehouse(){}
 
     public List<Driver> getAvailableDrivers() {
         return this.drivers.stream().filter(currentDriver-> !currentDriver.isOnLeave()).toList();
