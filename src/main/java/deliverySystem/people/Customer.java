@@ -6,6 +6,7 @@ import deliverySystem.warehouse.items.Product;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class Customer extends Person {
         this.customerID = UUID.randomUUID();
     }
 
-    public void placeOrder(List<Product> toOrder, long deliverDate){
-        OrderCollection.getInstance().addOrder(new Order(Order.Status.RECEIVED, this, System.currentTimeMillis(), deliverDate, toOrder));
+    public void placeOrder(List<Product> toOrder, LocalDate deliverDate){
+        OrderCollection.getInstance().addOrder(new Order(Order.Status.RECEIVED, this, LocalDate.now(), deliverDate, toOrder));
     }
 }

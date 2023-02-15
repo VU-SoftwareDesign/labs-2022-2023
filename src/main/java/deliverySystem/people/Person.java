@@ -3,7 +3,7 @@ package deliverySystem.people;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Person {
+public abstract class Person {
     @Getter @Setter
     private String name;
     @Getter @Setter

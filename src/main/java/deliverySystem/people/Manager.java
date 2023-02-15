@@ -19,7 +19,7 @@ public class Manager extends Employee{
     }
 
     public void dispatchOrders(Warehouse warehouse) {
-        dispatchOrders(warehouse.getDrivers(),warehouse.getVehicles(), OrderCollection.getInstance().getOrders());
+        dispatchOrders(warehouse.getAvailableDrivers(),warehouse.getAvailableVehicles(), OrderCollection.getInstance().getOrders());
     }
 
     private void dispatchOrders(List<Driver> drivers, List<Vehicle> vehicles, List<Order> orders) {
@@ -74,29 +74,6 @@ public class Manager extends Employee{
                 OrderCollection.getInstance().removeOrder(currentDriver.getAssignedOrder());
             }
         });
-    }
-    public static void main(String[] args){
-        List<Order> orders = new ArrayList<>();
-        List<Driver> drivers = new ArrayList<>();
-        List<Vehicle> vehicles  = new ArrayList<>();
-        List<Product> products = new ArrayList<>();
-
-        Customer customer = new Customer("bob", "homeless");
-        for(int i = 0; i < 4; i++) {
-            int finalI = i;
-            Arrays.stream(DrivingLicence.Type.values()).forEach(currentType -> {
-                vehicles.add(new Vehicle(currentType,0,0, "GB-"+ finalI));
-            });
-        }
-        for (int i = 0; i < 10; i++) {
-            products.add(new Product("test"+ (i), 99.00, 1000));
-            DrivingLicence drivingLicence = new DrivingLicence("1234-testing-testing-"+i, Arrays.asList(DrivingLicence.Type.B, DrivingLicence.Type.C, DrivingLicence.Type.D), "101010");
-            drivers.add(new Driver("marly-"+i, "homeless",drivingLicence, false));
-
-            Order order = new Order(Order.Status.RECEIVED, customer, 0,0, products);
-            orders.add(order);
-        }
-
     }
 
 }

@@ -18,13 +18,10 @@ public class Warehouse {
 
     @Setter @Getter
     private Manager manager;
-    private static Warehouse instance;
-    public Warehouse(){}
 
     public List<Driver> getAvailableDrivers() {
         return this.drivers.stream().filter(currentDriver-> !currentDriver.isOnLeave()).toList();
     }
-
     public List<Vehicle> getAvailableVehicles() {
         return this.vehicles.stream().filter(Vehicle::isOperable).toList();
     }

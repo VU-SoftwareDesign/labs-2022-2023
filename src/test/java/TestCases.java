@@ -10,6 +10,7 @@ import deliverySystem.warehouse.items.Vehicle;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +71,7 @@ public class TestCases {
             counter += 20;
         }
         for(int i =0; i < subListsOfProducts.size(); i++) {
-            orders.add(new Order(Order.Status.RECEIVED, customers.get(i), 0,0, subListsOfProducts.get(i)));
+            orders.add(new Order(Order.Status.RECEIVED, customers.get(i), LocalDate.now(),LocalDate.now(), subListsOfProducts.get(i)));
         }
     }
     private void populateWarehouse() {
