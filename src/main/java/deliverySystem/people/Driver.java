@@ -17,8 +17,8 @@ public class Driver extends Employee {
     @Getter @Setter
     private boolean inTransit;
 
-    public Driver(String name, String address, int employeeID, DrivingLicence drivingLicence, boolean onLeave) {
-        super(name, address, employeeID, onLeave);
+    public Driver(String name, String address, DrivingLicence drivingLicence, boolean onLeave) {
+        super(name, address, onLeave);
         this.drivingLicence = drivingLicence;
     }
 

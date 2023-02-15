@@ -7,16 +7,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Customer extends Person {
     /*
     * Why not have one ID in person and customer and employees inherit it? Could create some internal distinction between the two
     */
     @Getter @Setter
-    private int customerID;
-    public Customer(String name, String address, int customerID) {
+    private UUID customerID;
+    public Customer(String name, String address) {
         super(name, address);
-        this.customerID = customerID;
+        this.customerID = UUID.randomUUID();
     }
 
     public void placeOrder(List<Product> toOrder, long deliverDate){

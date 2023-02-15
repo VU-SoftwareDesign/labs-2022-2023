@@ -22,7 +22,4 @@ public class Company {
         if(instance==null) instance = new Company();
         return instance;
     }
-
-    public void placeOrder(List<Product> products) {
-    }
 }

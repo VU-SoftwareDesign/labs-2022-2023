@@ -60,6 +60,7 @@ public class Manager extends Employee{
         assignedDriversToVehicle.keySet().forEach(currentDriver-> {
             if(counter.get() < ordersToAssign.size()) {
                 currentDriver.assignOrder(ordersToAssign.get(counter.get()));
+                ordersToAssign.get(counter.get()).setStatus(Order.Status.OTW);
             }
             counter.addAndGet(1);
         });
@@ -70,9 +71,6 @@ public class Manager extends Employee{
         this.dispatchedDrivers.keySet().forEach(currentDriver->{
             if(currentDriver.getAssignedOrder().getStatus().equals(Order.Status.DELIVERED)) {
                 OrderCollection.getInstance().removeOrder(currentDriver.getAssignedOrder());
-                currentDriver.getAssignedOrder().getOrderedProducts().forEach(currentProduct -> {
-                    Warehouse.getInstance().substractStock(currentProduct);
-                });
             }
         });
     }
@@ -82,7 +80,7 @@ public class Manager extends Employee{
         List<Vehicle> vehicles  = new ArrayList<>();
         List<Product> products = new ArrayList<>();
 
-        Customer customer = new Customer("bob", "homeless", 0);
+        Customer customer = new Customer("bob", "homeless");
         for(int i = 0; i < 4; i++) {
             int finalI = i;
             Arrays.stream(DrivingLicence.Type.values()).forEach(currentType -> {
@@ -92,7 +90,7 @@ public class Manager extends Employee{
         for (int i = 0; i < 10; i++) {
             products.add(new Product("test"+ (i), 99.00, 1000));
             DrivingLicence drivingLicence = new DrivingLicence("1234-testing-testing-"+i, Arrays.asList(DrivingLicence.Type.B, DrivingLicence.Type.C, DrivingLicence.Type.D), "101010");
-            drivers.add(new Driver("marly-"+i, "homeless", 99,drivingLicence, false));
+            drivers.add(new Driver("marly-"+i, "homeless",drivingLicence, false));
 
             Order order = new Order(Order.Status.RECEIVED, customer, 0,0, products);
             orders.add(order);

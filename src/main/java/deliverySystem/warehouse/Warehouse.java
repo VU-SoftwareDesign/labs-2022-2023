@@ -15,8 +15,7 @@ public class Warehouse {
     private List<Vehicle> vehicles;
     @Setter @Getter
     private List<Driver> drivers;
-    @Setter @Getter
-    private List<Product> stocks;
+
     @Setter @Getter
     private Manager manager;
     private static Warehouse instance;
@@ -33,15 +32,4 @@ public class Warehouse {
     public List<Vehicle> getAvailableVehicles() {
         return this.vehicles.stream().filter(Vehicle::isOperable).toList();
     }
-
-    public List<Product> getAvailableProducts() {
-        return this.stocks.stream().filter(Product::inStock).toList();
-    }
-
-    public void substractStock(Product product) {
-        this.stocks.forEach(currentProduct-> {
-            if(currentProduct.getID().equals(product.getID())) {currentProduct.setAmount(currentProduct.getAmount() - product.getAmount());}
-        });
-    }
-
 }
