@@ -21,6 +21,4 @@ public class Product {
         this.amount = amount;
         this.ID = UUID.randomUUID();
     }
-
-    public boolean inStock() {return amount != 0;}
 }
