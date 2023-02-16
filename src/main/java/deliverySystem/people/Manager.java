@@ -2,20 +2,21 @@ package deliverySystem.people;
 
 import deliverySystem.orders.OrderCollection;
 import deliverySystem.orders.Order;
-import deliverySystem.util.DrivingLicence;
 import deliverySystem.warehouse.Warehouse;
-import deliverySystem.warehouse.items.Product;
 import deliverySystem.warehouse.items.Vehicle;
 import lombok.Getter;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 public class Manager extends Employee{
     @Getter
     private Map<Driver, Vehicle> dispatchedDrivers;
+    Logger log;
     public Manager(String name, String address, boolean onLeave) {
         super(name, address, onLeave);
+        this.log = Logger.getLogger(Manager.class.getName());
     }
 
     public void dispatchOrders(Warehouse warehouse) {

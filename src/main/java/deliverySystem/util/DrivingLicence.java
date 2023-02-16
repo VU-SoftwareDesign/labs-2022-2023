@@ -3,7 +3,6 @@ package deliverySystem.util;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DrivingLicence {

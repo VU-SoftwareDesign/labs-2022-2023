@@ -30,11 +30,12 @@ public class Vehicle {
         put(DrivingLicence.Type.E, 400);
     }};
 
-    public Vehicle(DrivingLicence.Type vehicleType, Integer mileage, long nextServiceDate, String numberPlate) {
+    public Vehicle(DrivingLicence.Type vehicleType, Integer mileage, long nextServiceDate, String numberPlate, boolean isOperable) {
         this.vehicleType = vehicleType;
         this.mileage = mileage;
         this.nextServiceDate = nextServiceDate;
         this.productCapacity = vehicleTypeToCapacity.get(this.vehicleType);
         this.numberPlate = numberPlate;
+        this.isOperable = isOperable;
     }
 }

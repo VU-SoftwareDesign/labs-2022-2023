@@ -5,10 +5,6 @@ import deliverySystem.util.DrivingLicence;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class Driver extends Employee {
     @Getter @Setter
     private DrivingLicence drivingLicence;

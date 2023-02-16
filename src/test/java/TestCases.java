@@ -14,8 +14,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TestCases {
+    /*
+    * If you wish to explore this framework, I'd suggest using a debugger to explore the different stages this framework goes through to dispatch the drivers. Happy exploring :)
+    */
+
+    Logger log = Logger.getLogger("TestCase");
     List<Order> orders = new ArrayList<>();
     List<Driver> drivers = new ArrayList<>();
     OrderCollection orderCollection;
@@ -26,6 +32,7 @@ public class TestCases {
 
     @Before
     public void populateData() {
+        log.info("Populating data...");
         populateCustomers();
         populateProducts();
         populateVehicles();
@@ -47,9 +54,10 @@ public class TestCases {
         for(int i = 0; i < 10; i++) {
             int currentIndex = i;
             Arrays.stream(DrivingLicence.Type.values()).forEach(currentType -> {
-                vehicles.add(new Vehicle(currentType, 0, 0, "GB-" + currentIndex));
+                vehicles.add(new Vehicle(currentType, 0, 0, "GB-" + currentIndex, true));
             });
         }
+        System.out.println("Vehicle size: "+ vehicles.size());
     }
 
     private void populateProducts() {
@@ -83,8 +91,9 @@ public class TestCases {
     @Test
     public void testDispatch() {
         warehouse.getManager().dispatchOrders(warehouse);
+        log.info("Printing dispatchedMap keysets: ");
         warehouse.getManager().getDispatchedDrivers().forEach((driver, vehicle)-> {
-            System.out.println(driver.getName() + " "+ vehicle.getNumberPlate());
+            log.info(driver.getName() + " "+ vehicle.getNumberPlate());
         });
     }
 }
