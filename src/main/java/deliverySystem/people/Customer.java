@@ -2,7 +2,9 @@ package deliverySystem.people;
 
 import deliverySystem.orders.Order;
 import deliverySystem.orders.OrderCollection;
+import deliverySystem.util.DrivingLicence;
 import deliverySystem.warehouse.items.Product;
+import deliverySystem.warehouse.items.Vehicle;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +24,8 @@ public class Customer extends Person {
     }
 
     public void placeOrder(List<Product> toOrder, LocalDate deliverDate){
-        OrderCollection.getInstance().addOrder(new Order(Order.Status.RECEIVED, this, LocalDate.now(), deliverDate, toOrder));
+        if(toOrder.size() <= Vehicle.vehicleTypeToCapacity.get(DrivingLicence.Type.E)){
+            OrderCollection.getInstance().addOrder(new Order(Order.Status.RECEIVED, this, LocalDate.now(), deliverDate, toOrder));
+        }
     }
 }

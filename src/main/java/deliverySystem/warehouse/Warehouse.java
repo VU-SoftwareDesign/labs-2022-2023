@@ -17,12 +17,24 @@ public class Warehouse {
     private List<Driver> drivers;
 
     @Setter @Getter
+    private List<Product> stocks;
+
+    @Setter @Getter
     private Manager manager;
 
     public List<Driver> getAvailableDrivers() {
-        return this.drivers.stream().filter(currentDriver-> !currentDriver.isOnLeave()).toList();
+        return this.drivers.stream().filter(currentDriver-> !currentDriver.isOnLeave() && !currentDriver.isInTransit()).toList();
     }
     public List<Vehicle> getAvailableVehicles() {
         return this.vehicles.stream().filter(Vehicle::isOperable).toList();
+    }
+
+    public Product getProduct(Product product){
+        for(Product p: stocks){
+            if(p.getName().equals(product.getName())){
+                return p;
+            }
+        }
+        return null;
     }
 }

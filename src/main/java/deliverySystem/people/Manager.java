@@ -1,80 +1,54 @@
 package deliverySystem.people;
 
-import deliverySystem.orders.OrderCollection;
+import deliverySystem.Company;
 import deliverySystem.orders.Order;
+import deliverySystem.orders.OrderCollection;
 import deliverySystem.warehouse.Warehouse;
+import deliverySystem.warehouse.items.Product;
 import deliverySystem.warehouse.items.Vehicle;
-import lombok.Getter;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class Manager extends Employee{
-    @Getter
-    private Map<Driver, Vehicle> dispatchedDrivers;
     Logger log;
     public Manager(String name, String address, boolean onLeave) {
         super(name, address, onLeave);
         this.log = Logger.getLogger(Manager.class.getName());
     }
 
-    public void dispatchOrders(Warehouse warehouse) {
-        dispatchOrders(warehouse.getAvailableDrivers(),warehouse.getAvailableVehicles(), OrderCollection.getInstance().getOrders());
-    }
-
-    private void dispatchOrders(List<Driver> drivers, List<Vehicle> vehicles, List<Order> orders) {
-         this.dispatchedDrivers = assignOrders(getAssignedDriverToVehicle(drivers,vehicles),orders);
-    }
-
-    private Map<Driver, Vehicle> getAssignedDriverToVehicle(List<Driver> drivers, List<Vehicle> vehicles) {
-        Map<Driver, Vehicle> assignedDriverToVehicle = new HashMap<>();
-        List<Vehicle> descentingTypeVehicles = getVehiclesDescendingType(vehicles);
-        descentingTypeVehicles.forEach(currentVehicle -> {
-            for (Driver currentDriver : drivers) {
-                if (!currentDriver.isInTransit() && currentDriver.getDrivingLicence().getEligibleVehicleTypes().contains(currentVehicle.getVehicleType())) {
-                    assignedDriverToVehicle.put(currentDriver, currentVehicle);
-                    currentDriver.setInTransit(true);
-                    currentVehicle.setInUse(true);
-                    break;
-                }
+    public boolean dispatchDriver(Order order) {
+        Warehouse warehouse = new Warehouse();
+        for (Warehouse w: Company.getInstance().getWarehouses()){
+            if(this.getEmployeeID() == w.getManager().getEmployeeID()){
+                warehouse = w;
             }
-        });
-        return assignedDriverToVehicle;
-    }
-
-    private List<Vehicle> getVehiclesDescendingType(List<Vehicle> vehicles) {
-        List<Vehicle> bigToSmallVehicles = new ArrayList<>(vehicles);
-        for(int i = 1; i < bigToSmallVehicles.size(); i++) {
-            Vehicle key = bigToSmallVehicles.get(i);
-            int j = i - 1;
-            while(j >=0 && bigToSmallVehicles.get(j).getVehicleType().toChar() < key.getVehicleType().toChar()) {
-                bigToSmallVehicles.set(j + 1, bigToSmallVehicles.get(j));
-                j = j - 1;
-            }
-            bigToSmallVehicles.set(j + 1, key);
         }
-        return bigToSmallVehicles;
-    }
+        if(warehouse.getAvailableDrivers().size() == 0 || warehouse.getAvailableVehicles().size() == 0) return false;
 
-    private Map<Driver,Vehicle> assignOrders (Map<Driver,Vehicle> assignedDriversToVehicle, List<Order> ordersToAssign) {
-        AtomicInteger counter = new AtomicInteger();
-        assignedDriversToVehicle.keySet().forEach(currentDriver-> {
-            if(counter.get() < ordersToAssign.size()) {
-                currentDriver.assignOrder(ordersToAssign.get(counter.get()));
-                ordersToAssign.get(counter.get()).setStatus(Order.Status.OTW);
+        Vehicle optimalVehicle = Vehicle.optimalVehicleType(warehouse.getAvailableVehicles(), order.getOrderSize());
+
+        for(Driver d: warehouse.getAvailableDrivers()){
+            if(d.getDrivingLicence().getBiggestVehicleType().toChar() >= optimalVehicle.getVehicleType().toChar()){
+                for (Product p: order.getOrderedProducts()) {
+                    Product warehouseStock = warehouse.getProduct(p);
+                    if( warehouseStock.getAmount() > 0){
+                        warehouseStock.reserveProduct();
+                    }else{
+                        return false;
+                    }
+                }
+                d.assignOrder(order);
+                d.setInTransit(true);
+                optimalVehicle.setOperable(false);
+                order.setStatus(Order.Status.OTW);
+                return true;
             }
-            counter.addAndGet(1);
-        });
-        return assignedDriversToVehicle;
+        }
+        return false;
     }
 
     public void discardCompletedOrders() {
-        this.dispatchedDrivers.keySet().forEach(currentDriver->{
-            if(currentDriver.getAssignedOrder().getStatus().equals(Order.Status.DELIVERED)) {
-                OrderCollection.getInstance().removeOrder(currentDriver.getAssignedOrder());
-            }
-        });
+        OrderCollection.getInstance().getOrders().removeAll(OrderCollection.getInstance().getOrders().stream().filter(order -> order.getStatus() == Order.Status.DELIVERED).toList());
     }
 
 }

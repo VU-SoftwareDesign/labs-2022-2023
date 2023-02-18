@@ -21,4 +21,13 @@ public class Product {
         this.amount = amount;
         this.ID = UUID.randomUUID();
     }
+
+    public void restock(Integer quantity){ amount += quantity;}
+    public boolean reserveProduct(){
+        if(amount == 0) return false;
+        else{
+            amount--;
+            return true;
+        }
+    }
 }

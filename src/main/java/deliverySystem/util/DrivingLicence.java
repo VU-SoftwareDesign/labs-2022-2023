@@ -3,7 +3,9 @@ package deliverySystem.util;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DrivingLicence {
     public enum Type {
@@ -19,14 +21,18 @@ public class DrivingLicence {
     }
     @Getter @Setter
     private String ID;
+
+    @Getter @Setter
+    private Type biggestVehicleType;
     @Getter @Setter
     private List<DrivingLicence.Type> eligibleVehicleTypes;
     @Getter @Setter
     private String expiryDate;
 
-    public DrivingLicence(String ID, List<DrivingLicence.Type> eligibleVehicleTypes, String expiryDate) {
+    public DrivingLicence(String ID, DrivingLicence.Type biggestVehicleType, String expiryDate) {
         this.ID = ID;
-        this.eligibleVehicleTypes = eligibleVehicleTypes;
+        this.biggestVehicleType = biggestVehicleType;
+        this.eligibleVehicleTypes = Arrays.stream(Type.values()).filter( t -> t.toChar() <= biggestVehicleType.toChar()).collect(Collectors.toList());
         this.expiryDate = expiryDate;
     }
 }

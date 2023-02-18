@@ -4,8 +4,9 @@ import deliverySystem.util.DrivingLicence;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static java.lang.Math.abs;
 
 public class Vehicle {
     @Setter @Getter
@@ -23,7 +24,9 @@ public class Vehicle {
     private boolean inUse;
     @Setter @Getter
     private int productCapacity;
-    private static final Map<DrivingLicence.Type, Integer> vehicleTypeToCapacity = new HashMap<>(){{
+
+    @Getter
+    public static final Map<DrivingLicence.Type, Integer> vehicleTypeToCapacity = new HashMap<>(){{
         put(DrivingLicence.Type.B, 50);
         put(DrivingLicence.Type.C, 100);
         put(DrivingLicence.Type.D, 200);
@@ -37,5 +40,13 @@ public class Vehicle {
         this.productCapacity = vehicleTypeToCapacity.get(this.vehicleType);
         this.numberPlate = numberPlate;
         this.isOperable = isOperable;
+    }
+
+    public static Vehicle optimalVehicleType(List<Vehicle> vehicles, int orderSize){
+        List<Integer> deltas = new ArrayList<>(vehicles.size());
+        for (Vehicle vehicle : vehicles) {
+            deltas.add(abs(orderSize - vehicle.productCapacity));
+        }
+        return vehicles.get(deltas.indexOf(Collections.min(deltas)));
     }
 }

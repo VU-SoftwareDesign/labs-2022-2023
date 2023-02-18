@@ -54,4 +54,8 @@ public class Order {
         this.deliveryDate = order.getDeliveryDate();
         this.orderedProducts = order.getOrderedProducts();
     }
+
+    public int getOrderSize(){
+        return orderedProducts.size();
+    }
 }
