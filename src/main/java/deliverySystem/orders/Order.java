@@ -37,13 +37,17 @@ public class Order {
     @Setter @Getter
     private List<Product> orderedProducts;
 
-    public Order(Status status, Customer customer, LocalDate orderDate, LocalDate deliveryDate, List<Product> orderedProducts) {
+    @Setter @Getter
+    private Boolean received;
+
+    public Order(Status status, Customer customer, LocalDate orderDate, LocalDate deliveryDate) {
         this.orderID = UUID.randomUUID();
         this.status = status;
         this.customer = customer;
         this.orderDate = orderDate;
         this.deliveryDate = deliveryDate;
-        this.orderedProducts = orderedProducts;
+        this.orderedProducts = customer.getPersonalOrder().getOrderedProducts();
+        this.received = false;
     }
     // Check if this actually is safer than just adding a given order into the framework.
     public Order(Order order) {
@@ -53,9 +57,5 @@ public class Order {
         this.orderDate = order.getOrderDate();
         this.deliveryDate = order.getDeliveryDate();
         this.orderedProducts = order.getOrderedProducts();
-    }
-
-    public int getOrderSize(){
-        return orderedProducts.size();
     }
 }

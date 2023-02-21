@@ -25,7 +25,7 @@ public class Manager extends Employee{
         }
         if(warehouse.getAvailableDrivers().size() == 0 || warehouse.getAvailableVehicles().size() == 0) return false;
 
-        Vehicle optimalVehicle = Vehicle.optimalVehicleType(warehouse.getAvailableVehicles(), order.getOrderSize());
+        Vehicle optimalVehicle = Vehicle.optimalVehicleType(warehouse.getAvailableVehicles(), order.getOrderedProducts().size());
 
         for(Driver d: warehouse.getAvailableDrivers()){
             if(d.getDrivingLicence().getBiggestVehicleType().toChar() >= optimalVehicle.getVehicleType().toChar()){
@@ -48,7 +48,9 @@ public class Manager extends Employee{
     }
 
     public void discardCompletedOrders() {
-        OrderCollection.getInstance().getOrders().removeAll(OrderCollection.getInstance().getOrders().stream().filter(order -> order.getStatus() == Order.Status.DELIVERED).toList());
+        OrderCollection.getInstance().getOrders().removeAll(
+                OrderCollection.getInstance().getOrders().stream().filter(
+                        order -> order.getStatus() == Order.Status.DELIVERED && order.getReceived()).toList());
     }
 
 }

@@ -1,6 +1,7 @@
 package deliverySystem.people;
 
 import deliverySystem.orders.Order;
+import deliverySystem.orders.OrderCollection;
 import deliverySystem.util.DrivingLicence;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,5 +23,11 @@ public class Driver extends Employee {
         this.assignedOrder = order;
     }
 
-    public void completeOrder() {this.assignedOrder.setStatus(Order.Status.DELIVERED);}
+    public void completeOrder() {
+        for(Order order: OrderCollection.getInstance().getOrders()){
+            if(order.getOrderID() == assignedOrder.getOrderID()){
+                order.setStatus(Order.Status.DELIVERED);
+            }
+        }
+    }
 }

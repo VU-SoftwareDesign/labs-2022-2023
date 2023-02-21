@@ -18,14 +18,27 @@ public class Customer extends Person {
     */
     @Getter @Setter
     private UUID customerID;
+
+    @Setter @Getter
+    private Order personalOrder;
+
     public Customer(String name, String address) {
         super(name, address);
         this.customerID = UUID.randomUUID();
     }
 
-    public void placeOrder(List<Product> toOrder, LocalDate deliverDate){
-        if(toOrder.size() <= Vehicle.vehicleTypeToCapacity.get(DrivingLicence.Type.E)){
-            OrderCollection.getInstance().addOrder(new Order(Order.Status.RECEIVED, this, LocalDate.now(), deliverDate, toOrder));
+    public Boolean placeOrder(LocalDate deliverDate){
+        if(personalOrder.getOrderedProducts().size() <= Vehicle.vehicleTypeToCapacity.get(DrivingLicence.Type.E)){
+            OrderCollection.getInstance().addOrder(new Order(Order.Status.RECEIVED, this, LocalDate.now(), deliverDate));
+            return true;
+        }else return false;
+    }
+
+    public void confirmReceive(){
+        for(Order order: OrderCollection.getInstance().getOrders()){
+            if(order.getOrderID() == personalOrder.getOrderID()){
+                order.setReceived(true);
+            }
         }
     }
 }

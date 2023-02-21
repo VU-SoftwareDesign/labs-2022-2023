@@ -73,16 +73,16 @@ public class TestCases {
     }
 
     private void populateOrders() {
-        List<List<Product>> subListsOfProducts = new ArrayList<>();
-        int counter  = -1;
-        while(counter < products.size() - 1) {
-            subListsOfProducts.add(products.subList(counter+1, counter+20));
-            counter += 20;
-        }
-        for(int i =0; i < subListsOfProducts.size(); i++) {
-            orders.add(new Order(Order.Status.RECEIVED, customers.get(i), LocalDate.now(),LocalDate.now(), subListsOfProducts.get(i)));
+        for(Customer customer: customers){
+            int counter  = -1;
+            while(counter < products.size() - 1) {
+                customer.getPersonalOrder().getOrderedProducts().addAll(products.subList(counter+1, counter+20));
+                counter += 20;
+            }
+            orders.add(new Order(Order.Status.RECEIVED, customer, LocalDate.now(),LocalDate.now()));
         }
     }
+
     private void populateWarehouse() {
         warehouse = new Warehouse();
         warehouse.setDrivers(drivers);
