@@ -79,7 +79,7 @@ public class TestCases {
                 customer.getPersonalOrder().getOrderedProducts().addAll(products.subList(counter+1, counter+20));
                 counter += 20;
             }
-            orders.add(new Order(Order.Status.RECEIVED, customer, LocalDate.now(),LocalDate.now()));
+            orders.add(new Order(Order.Status.PLACED, customer, LocalDate.now(),LocalDate.now()));
         }
     }
 

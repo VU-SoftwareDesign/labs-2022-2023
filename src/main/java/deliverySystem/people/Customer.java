@@ -3,13 +3,11 @@ package deliverySystem.people;
 import deliverySystem.orders.Order;
 import deliverySystem.orders.OrderCollection;
 import deliverySystem.util.DrivingLicence;
-import deliverySystem.warehouse.items.Product;
 import deliverySystem.warehouse.items.Vehicle;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 public class Customer extends Person {
@@ -29,7 +27,7 @@ public class Customer extends Person {
 
     public Boolean placeOrder(LocalDate deliverDate){
         if(personalOrder.getOrderedProducts().size() <= Vehicle.vehicleTypeToCapacity.get(DrivingLicence.Type.E)){
-            OrderCollection.getInstance().addOrder(new Order(Order.Status.RECEIVED, this, LocalDate.now(), deliverDate));
+            OrderCollection.getInstance().addOrder(new Order(Order.Status.PLACED, this, LocalDate.now(), deliverDate));
             return true;
         }else return false;
     }

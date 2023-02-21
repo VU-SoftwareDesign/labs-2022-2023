@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class Order {
     public enum Status {
-        RECEIVED("Received"),
+        PLACED("Received"),
         OTW("On the way"),
         DELIVERED("Delivered");
 
