@@ -1,3 +1,4 @@
+import deliverySystem.Company;
 import deliverySystem.orders.Order;
 import deliverySystem.orders.OrderCollection;
 import deliverySystem.people.Customer;
@@ -8,11 +9,13 @@ import deliverySystem.warehouse.Warehouse;
 import deliverySystem.warehouse.items.Product;
 import deliverySystem.warehouse.items.Vehicle;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class TestCases {
@@ -28,6 +31,7 @@ public class TestCases {
     List<Vehicle> vehicles  = new ArrayList<>();
     List<Product> products = new ArrayList<>();
     List<Customer> customers = new ArrayList<>();
+    List<Warehouse> warehouses = new ArrayList<>();
 
     @Before
     public void populateData() {
@@ -44,7 +48,11 @@ public class TestCases {
 
     private void populateCustomers() {
         for(int i = 0; i < 10; i++) {
-            customers.add(new Customer("Bob-"+ i, "homeless"));
+            Customer customer = new Customer("Bob-"+ i, "homeless");
+            Order order = new Order(Order.Status.PLACED, LocalDate.now(),LocalDate.now());
+            customer.setPersonalOrder(Optional.of(order));
+            order.setCustomer(customer);
+            customers.add(customer);
         }
     }
 
@@ -76,10 +84,13 @@ public class TestCases {
         for(Customer customer: customers){
             int counter  = -1;
             while(counter < products.size() - 1) {
-                customer.getPersonalOrder().getOrderedProducts().addAll(products.subList(counter+1, counter+20));
+                List<Product> productList = new ArrayList<>(products.subList(counter + 1, counter + 20));
+                customer.getPersonalOrder().get().setOrderedProducts(productList);
                 counter += 20;
             }
-            orders.add(new Order(Order.Status.PLACED, customer, LocalDate.now(),LocalDate.now()));
+            Order order = new Order(Order.Status.PLACED, LocalDate.now(),LocalDate.now());
+            order.setOrderedProducts(products);
+            orders.add(order);
         }
     }
 
@@ -88,6 +99,15 @@ public class TestCases {
         warehouse.setDrivers(drivers);
         warehouse.setVehicles(vehicles);
         warehouse.setManager(new Manager("bobby", "homeless", false));
+        warehouse.setStocks(products);
+        warehouses.add(warehouse);
     }
-//    @Test
+
+    @Test
+    public void testDispatch() {
+        log.info("Orders size:" + orders.size());
+        Company company = Company.getInstance();
+        company.setWarehouses(warehouses);
+        orders.forEach(currentOrder-> {if(this.warehouse.getManager().dispatchDriver(currentOrder)) log.info("successful");} );
+    }
 }

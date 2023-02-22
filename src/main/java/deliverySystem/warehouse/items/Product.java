@@ -23,11 +23,7 @@ public class Product {
     }
 
     public void restock(Integer quantity){ amount += quantity;}
-    public boolean reserveProduct(){
-        if(amount == 0) return false;
-        else{
-            amount--;
-            return true;
-        }
-    }
+    public void reserveProduct() {this.amount--;}
+
+    public boolean canReserve() {return !(amount == 0);}
 }

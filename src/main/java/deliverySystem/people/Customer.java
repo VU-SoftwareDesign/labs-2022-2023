@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Customer extends Person {
@@ -18,25 +19,30 @@ public class Customer extends Person {
     private UUID customerID;
 
     @Setter @Getter
-    private Order personalOrder;
+    private Optional<Order> personalOrder;
 
     public Customer(String name, String address) {
         super(name, address);
         this.customerID = UUID.randomUUID();
     }
 
+    public Customer(Customer customer) {
+        super(customer.getName(),customer.getAddress());
+        this.customerID = customer.getCustomerID();
+        this.personalOrder = customer.getPersonalOrder();
+    }
+
     public Boolean placeOrder(LocalDate deliverDate){
-        if(personalOrder.getOrderedProducts().size() <= Vehicle.vehicleTypeToCapacity.get(DrivingLicence.Type.E)){
-            OrderCollection.getInstance().addOrder(new Order(Order.Status.PLACED, this, LocalDate.now(), deliverDate));
+        if(personalOrder.get().getOrderedProducts().size() <= Vehicle.vehicleTypeToCapacity.get(DrivingLicence.Type.E)){
+            Order order = new Order(Order.Status.PLACED, LocalDate.now(), deliverDate);
+            order.setCustomer(this);
+            OrderCollection.getInstance().addOrder(order);
             return true;
         }else return false;
     }
 
     public void confirmReceive(){
-        for(Order order: OrderCollection.getInstance().getOrders()){
-            if(order.getOrderID() == personalOrder.getOrderID()){
-                order.setReceived(true);
-            }
-        }
+        personalOrder.get().setReceived(true);
+        OrderCollection.getInstance().updateOrder(this.personalOrder.get());
     }
 }

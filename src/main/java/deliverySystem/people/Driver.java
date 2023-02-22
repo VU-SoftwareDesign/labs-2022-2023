@@ -20,14 +20,11 @@ public class Driver extends Employee {
     }
 
     public void assignOrder(Order order) {
-        this.assignedOrder = order;
+        this.assignedOrder = new Order(order);
     }
 
     public void completeOrder() {
-        for(Order order: OrderCollection.getInstance().getOrders()){
-            if(order.getOrderID() == assignedOrder.getOrderID()){
-                order.setStatus(Order.Status.DELIVERED);
-            }
-        }
+        this.assignedOrder.setStatus(Order.Status.DELIVERED);
+        OrderCollection.getInstance().updateOrder(this.assignedOrder);
     }
 }

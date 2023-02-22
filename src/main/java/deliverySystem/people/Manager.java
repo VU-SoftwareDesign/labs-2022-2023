@@ -27,20 +27,21 @@ public class Manager extends Employee{
 
         Vehicle optimalVehicle = Vehicle.optimalVehicleType(warehouse.getAvailableVehicles(), order.getOrderedProducts().size());
 
-        for(Driver d: warehouse.getAvailableDrivers()){
-            if(d.getDrivingLicence().getBiggestVehicleType().toChar() >= optimalVehicle.getVehicleType().toChar()){
+        for(Driver currentDriver: warehouse.getAvailableDrivers()){
+            if(currentDriver.getDrivingLicence().getBiggestVehicleType().toChar() >= optimalVehicle.getVehicleType().toChar()){
                 for (Product p: order.getOrderedProducts()) {
                     Product warehouseStock = warehouse.getProduct(p);
-                    if( warehouseStock.getAmount() > 0){
+                    if(warehouseStock.canReserve()) {
                         warehouseStock.reserveProduct();
                     }else{
                         return false;
                     }
                 }
-                d.assignOrder(order);
-                d.setInTransit(true);
-                optimalVehicle.setOperable(false);
                 order.setStatus(Order.Status.OTW);
+                currentDriver.assignOrder(order);
+
+                currentDriver.setInTransit(true);
+                optimalVehicle.setOperable(false);
                 return true;
             }
         }

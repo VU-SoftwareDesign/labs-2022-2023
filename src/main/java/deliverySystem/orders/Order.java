@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Order {
+
     public enum Status {
         PLACED("Received"),
         OTW("On the way"),
@@ -28,25 +31,22 @@ public class Order {
     private final UUID orderID;
     @Setter @Getter
     private Order.Status status;
-    @Setter @Getter
-    private Customer customer;
+
+    private Optional<Customer> customer;
     @Setter @Getter
     private LocalDate orderDate;
     @Setter @Getter
     private LocalDate deliveryDate;
-    @Setter @Getter
     private List<Product> orderedProducts;
 
     @Setter @Getter
     private Boolean received;
 
-    public Order(Status status, Customer customer, LocalDate orderDate, LocalDate deliveryDate) {
+    public Order(Status status, LocalDate orderDate, LocalDate deliveryDate) {
         this.orderID = UUID.randomUUID();
         this.status = status;
-        this.customer = customer;
         this.orderDate = orderDate;
         this.deliveryDate = deliveryDate;
-        this.orderedProducts = customer.getPersonalOrder().getOrderedProducts();
         this.received = false;
     }
     // Check if this actually is safer than just adding a given order into the framework.
@@ -57,5 +57,22 @@ public class Order {
         this.orderDate = order.getOrderDate();
         this.deliveryDate = order.getDeliveryDate();
         this.orderedProducts = order.getOrderedProducts();
+        this.received = order.getReceived();
+    }
+
+    public Optional<Customer> getCustomer() {
+        return this.customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = Optional.of(new Customer(customer));
+    }
+
+    public List<Product> getOrderedProducts() {
+        return new ArrayList<>(this.orderedProducts);
+    }
+
+    public void setOrderedProducts(List<Product> orderedProducts) {
+        this.orderedProducts = new ArrayList<>(orderedProducts);
     }
 }
