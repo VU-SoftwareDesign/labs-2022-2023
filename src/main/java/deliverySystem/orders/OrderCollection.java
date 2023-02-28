@@ -56,7 +56,11 @@ public class OrderCollection {
 
     public void updateOrder(Order toUpdate) {
         for (int i = 0; i < this.orders.size(); i++) {
-            if(toUpdate.getOrderID().compareTo(this.orders.get(i).getOrderID()) == 0) this.orders.set(i,new Order(toUpdate));
+            if(toUpdate.getOrderID().compareTo(this.orders.get(i).getOrderID()) == 0) {
+                this.orders.set(i, new Order(toUpdate));
+                return;
+            }
         }
+        log.info("Order not found");
     }
 }

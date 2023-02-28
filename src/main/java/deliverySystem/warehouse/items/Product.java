@@ -21,6 +21,12 @@ public class Product {
         this.amount = amount;
         this.ID = UUID.randomUUID();
     }
+    public Product(Product product) {
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.amount = product.getAmount();
+        this.ID = product.getID();
+    }
 
     public void restock(Integer quantity){ amount += quantity;}
     public void reserveProduct() {this.amount--;}

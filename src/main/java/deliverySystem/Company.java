@@ -5,6 +5,7 @@ import deliverySystem.warehouse.items.Product;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,10 +25,17 @@ public class Company {
         return instance;
     }
 
-    public void discontinue(Product product){
-        productRange.removeIf(product1 -> Objects.equals(product1.getName(), product.getName()));
-        for(Warehouse w: warehouses){
-            w.getStocks().removeIf(product2 -> Objects.equals(product2.getName(), product.getName()));
-        }
+    public void restockProducts() {
+        this.warehouses.forEach(currentWarehouse -> {
+            currentWarehouse.getStocks().forEach(currentProduct -> {
+                if(!currentProduct.canReserve()) currentProduct.restock(50);
+            });
+        });
+    }
+    
+    public List<Product> getAvailableProducts() {
+        List<Product> allProducts = new ArrayList<>();
+        this.productRange.forEach(currentProduct -> allProducts.add(new Product(currentProduct)));
+        return allProducts.stream().filter(Product::canReserve).toList();
     }
 }
